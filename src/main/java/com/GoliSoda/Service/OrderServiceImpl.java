@@ -1,4 +1,5 @@
 package com.GoliSoda.Service;
+
 import java.util.*;
 import com.GoliSoda.Entity.*;
 import com.GoliSoda.Repository.*;
@@ -12,66 +13,119 @@ import lombok.*;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
+	private final OrderRepository orderRepository;
+	private final ProductRepository productRepository;
 
-    @Override
-    public Order placeOrder(OrderDTO dto) {
+	@Override
+	public OrderResponseDTO placeOrder(OrderDTO dto) {
 
-        Order order = new Order();
+		Order order = new Order();
 
-        order.setShopName(dto.getShopName());
-        order.setOwnerName(dto.getOwnerName());
-        order.setPhone(dto.getPhone());
-        order.setLocation(dto.getLocation());
-        order.setOrderedAt(LocalDateTime.now());
+		order.setShopName(dto.getShopName());
 
-        List<OrderItem> orderItems = new ArrayList<>();
+		order.setOwnerName(dto.getOwnerName());
 
-        for (OrderItemDTO itemDTO : dto.getItems()) {
+		order.setPhone(dto.getPhone());
 
-            ProductEntity product = productRepository
-                    .findById(itemDTO.getProductId())
-                    .orElseThrow(() ->
-                            new ResourceNotFoundException(
-                                    "Product not found"));
+		order.setLocation(dto.getLocation());
 
-            OrderItem item = new OrderItem();
+		order.setOrderedAt(LocalDateTime.now());
 
-            item.setProduct(product);
-            item.setQuantity(itemDTO.getQuantity());
-            item.setOrder(order);
+		order.setStatus(OrderStatus.PENDING);
 
-            orderItems.add(item);
-        }
+		List<OrderItem> items = dto.getItems().stream().map(itemDto -> {
 
-        order.setItems(orderItems);
+			ProductEntity product = productRepository.findById(itemDto.getProductId())
+					.orElseThrow(() -> new RuntimeException("Product not found"));
 
-        return orderRepository.save(order);
-    }
+			OrderItem item = new OrderItem();
 
-    @Override
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
-    }
+			item.setProduct(product);
 
-    @Override
-    public Order getOrderById(Long id) {
+			item.setQuantity(itemDto.getQuantity());
 
-        return orderRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Order not found"));
-    }
+			item.setOrder(order);
 
-    @Override
-    public void deleteOrder(Long id) {
+			return item;
 
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Order not found"));
+		}).toList();
 
-        orderRepository.delete(order);
-    }
+		order.setItems(items);
+
+		Order savedOrder = orderRepository.save(order);
+
+		String whatsappUrl = generateWhatsAppUrl(savedOrder);
+
+		return new OrderResponseDTO(
+
+				savedOrder.getId(),
+
+				savedOrder.getStatus().name(),
+
+				whatsappUrl);
+	}
+
+	@Override
+	public List<Order> getAllOrders() {
+		return orderRepository.findAll();
+	}
+
+	@Override
+	public Order getOrderById(Long id) {
+
+		return orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+	}
+
+	@Override
+	public void deleteOrder(Long id) {
+
+		Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+
+		orderRepository.delete(order);
+	}
+
+	@Override
+	public Order updateOrderStatus(Long orderId, OrderStatus status) {
+
+		Order order = orderRepository.findById(orderId)
+				.orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+
+		order.setStatus(status);
+
+		return orderRepository.save(order);
+	}
+
+	private String generateWhatsAppUrl(Order order) {
+
+		String message = generateWhatsAppMessage(order);
+
+		return "https://wa.me/919876543210?text=" + message;
+	}
+
+	private String generateWhatsAppMessage(Order order) {
+
+		StringBuilder message = new StringBuilder();
+
+		message.append("Hello Goli Soda Team,%0A%0A");
+
+		message.append("New Bulk Order Request%0A%0A");
+
+		message.append("Shop Name: ").append(order.getShopName()).append("%0A");
+
+		message.append("Owner Name: ").append(order.getOwnerName()).append("%0A");
+
+		message.append("Phone: ").append(order.getPhone()).append("%0A");
+
+		message.append("Location: ").append(order.getLocation()).append("%0A%0A");
+
+		message.append("Products:%0A");
+
+		for (OrderItem item : order.getItems()) {
+
+			message.append("- ").append(item.getProduct().getName()).append(" x ").append(item.getQuantity())
+					.append("%0A");
+		}
+
+		return message.toString();
+	}
 }

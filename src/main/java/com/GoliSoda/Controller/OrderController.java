@@ -1,4 +1,5 @@
 package com.GoliSoda.Controller;
+
 import org.springframework.web.bind.annotation.*;
 import com.GoliSoda.Service.*;
 import org.springframework.http.*;
@@ -6,9 +7,6 @@ import com.GoliSoda.Entity.*;
 import java.util.*;
 import lombok.*;
 import com.GoliSoda.DTO.*;
-import jakarta.validation.*;
-
-
 
 
 @RestController
@@ -17,43 +15,43 @@ import jakarta.validation.*;
 @CrossOrigin("*")
 public class OrderController {
 
-    private final OrderService orderService;
+	private final OrderService orderService;
 
-    @PostMapping
-    public ResponseEntity<Order> placeOrder(
-            @Valid @RequestBody OrderDTO dto) {
+	@PostMapping
+	public ResponseEntity<OrderResponseDTO> placeOrder(
 
-        return new ResponseEntity<>(
-                orderService.placeOrder(dto),
-                HttpStatus.CREATED
-        );
-    }
+			@RequestBody OrderDTO dto) {
 
-    @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
+		return ResponseEntity.ok(orderService.placeOrder(dto));
+	}
 
-        return ResponseEntity.ok(
-                orderService.getAllOrders()
-        );
-    }
+	@GetMapping
+	public ResponseEntity<List<Order>> getAllOrders() {
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(
-            @PathVariable Long id) {
+		return ResponseEntity.ok(orderService.getAllOrders());
+	}
 
-        return ResponseEntity.ok(
-                orderService.getOrderById(id)
-        );
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOrder(
-            @PathVariable Long id) {
+		return ResponseEntity.ok(orderService.getOrderById(id));
+	}
 
-        orderService.deleteOrder(id);
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                "Order deleted successfully"
-        );
-    }
+		orderService.deleteOrder(id);
+
+		return ResponseEntity.ok("Order deleted successfully");
+	}
+
+	@PutMapping("/{id}/status")
+	public ResponseEntity<Order> updateStatus(
+
+			@PathVariable Long id,
+
+			@RequestParam OrderStatus status) {
+
+		return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
+	}
 }

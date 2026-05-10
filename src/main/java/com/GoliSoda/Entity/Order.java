@@ -29,6 +29,9 @@ public class Order {
 
     private LocalDateTime orderedAt;
     
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+    
     @JsonManagedReference
     @OneToMany(mappedBy = "order",
             cascade = CascadeType.ALL)
