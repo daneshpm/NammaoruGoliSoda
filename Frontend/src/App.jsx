@@ -1,5 +1,4 @@
 import {
-  BrowserRouter,
   Routes,
   Route
 } from "react-router-dom"
@@ -13,14 +12,11 @@ import Footer from "./components/Footer"
 import Cart from "./components/Cart"
 import Checkout from "./components/Checkout"
 
-import AdminLogin
-from "./pages/AdminLogin"
-
-import AdminDashboard
-from "./pages/AdminDashboard"
-import AdminProducts
-from "./pages/AdminProducts"
+import AdminLogin from "./pages/AdminLogin"
+import AdminDashboard from "./pages/AdminDashboard"
+import AdminProducts from "./pages/AdminProducts"
 import AdminOrders from "./pages/AdminOrders"
+import Analytics from "./pages/Analytics"
 
 function HomePage() {
 
@@ -29,19 +25,12 @@ function HomePage() {
     <>
 
       <Navbar />
-
       <Hero />
-
       <Products />
-
       <Cart />
-
       <Checkout />
-
       <About />
-
       <Contact />
-
       <Footer />
 
     </>
@@ -51,8 +40,6 @@ function HomePage() {
 function App() {
 
   return (
-
-    <BrowserRouter>
 
       <Routes>
 
@@ -70,16 +57,22 @@ function App() {
           path="/dashboard"
           element={<AdminDashboard />}
         />
-       
-<Route path="/admin/orders" element={<AdminOrders />} />
 
-<Route path="/admin/products" element={<AdminProducts />} />
+        <Route
+          path="/admin/orders"
+          element={<AdminOrders />}
+        />
 
-
+        <Route
+          path="/admin/products"
+          element={<AdminProducts />}
+        />
+        <Route
+    path="/admin/analytics"
+    element={<Analytics />}
+/>
 
       </Routes>
-
-    </BrowserRouter>
   )
 }
 
