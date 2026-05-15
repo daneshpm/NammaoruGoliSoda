@@ -1,7 +1,4 @@
-import {
-  Routes,
-  Route
-} from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 
 import Navbar from "./components/Navbar"
 import Hero from "./components/Hero"
@@ -21,18 +18,13 @@ import Analytics from "./pages/Analytics"
 function HomePage() {
 
   return (
-
     <>
-
       <Navbar />
       <Hero />
       <Products />
-      <Cart />
-      <Checkout />
       <About />
       <Contact />
       <Footer />
-
     </>
   )
 }
@@ -40,39 +32,16 @@ function HomePage() {
 function App() {
 
   return (
-
-      <Routes>
-
-        <Route
-          path="/"
-          element={<HomePage />}
-        />
-
-        <Route
-          path="/admin"
-          element={<AdminLogin />}
-        />
-
-        <Route
-          path="/dashboard"
-          element={<AdminDashboard />}
-        />
-
-        <Route
-          path="/admin/orders"
-          element={<AdminOrders />}
-        />
-
-        <Route
-          path="/admin/products"
-          element={<AdminProducts />}
-        />
-        <Route
-    path="/admin/analytics"
-    element={<Analytics />}
-/>
-
-      </Routes>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/admin" element={<AdminLogin />} />
+      <Route path="/dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/orders" element={<AdminOrders />} />
+      <Route path="/admin/products" element={<AdminProducts />} />
+      <Route path="/admin/analytics" element={<Analytics />} />
+    </Routes>
   )
 }
 

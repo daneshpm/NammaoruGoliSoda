@@ -1,59 +1,30 @@
-import { useEffect, useState, useContext }
-from "react"
-
+import { useEffect, useState, useContext } from "react"
 import api from "../services/api"
-
-import {
-    CartContext
-} from "../context/CartContext"
+import { CartContext } from "../context/CartContext"
+import noImage from "../assets/no-image.jpg"
+import Loader from "./Loader"
+import { motion } from "framer-motion"
 
 function Products() {
 
-    const [products, setProducts] =
-        useState([])
-
-    const { addToCart } =
-        useContext(CartContext)
+    const [products, setProducts] = useState([])
+    const [loading, setLoading] = useState(true)
+    const { addToCart } = useContext(CartContext)
 
     useEffect(() => {
-
         fetchProducts()
-
     }, [])
 
     const fetchProducts = async () => {
-
         try {
-
             console.log("Fetching products...")
-
-            const response =
-                await api.get("/products")
-
-            console.log("FULL RESPONSE:")
-            console.log(response)
-
-            console.log("DATA:")
+            const response = await api.get("/products")
             console.log(response.data)
-
-            console.log(
-                Array.isArray(response.data)
-            )
-
-            console.log(
-                response.data.length
-            )
-
             setProducts(response.data)
-
         } catch(error) {
-
-            console.log("ERROR:")
             console.log(error)
-
-            console.log(error.response)
-
-            console.log(error.message)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -61,73 +32,126 @@ function Products() {
 
         <section
             id="products"
-            className="py-20 px-10 bg-gray-100">
+            className="
+                py-12 sm:py-16 md:py-20
+                px-4 sm:px-6 md:px-10
+                bg-gray-100
+            "
+        >
 
-            <h2
-                className="text-4xl font-bold text-center mb-12">
-
+            {/* Heading */}
+            <motion.h2
+                initial={{ opacity: 0, y: -30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                className="
+                    text-3xl sm:text-4xl md:text-5xl
+                    font-bold text-center mb-12
+                "
+            >
                 Our Products
+            </motion.h2>
 
-            </h2>
+            {/* Loading */}
+            {loading && <Loader />}
 
-            <div
-                className="grid md:grid-cols-3 gap-8">
+            {/* Empty */}
+            {!loading && products.length === 0 && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-center text-xl"
+                >
+                    No products available
+                </motion.div>
+            )}
 
-                {
-                    products.map(product => (
+            {/* Product Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
 
-                        <div
-                            key={product.id}
-                            className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-300">
+                {products.map((product, index) => (
 
-                            <img
-                                src={`http://localhost:8080${product.imageUrl}`}
+                    <motion.div
+                        key={product.id}
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        viewport={{ once: true }}
+                        whileHover={{ y: -8, boxShadow: "0 20px 40px rgba(0,0,0,0.12)" }}
+                        className="bg-white rounded-2xl overflow-hidden shadow-md"
+                    >
+
+                        {/* Product Image */}
+                        <div className="overflow-hidden">
+                            <motion.img
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 0.4 }}
+                                src={`https://zonate-filomena-nonfeasible.ngrok-free.dev${product.imageUrl}`}
                                 alt={product.name}
-                                className="w-full h-56 object-cover rounded-xl mb-4"
+                                className="w-full h-56 sm:h-64 object-cover"
+                                onError={(e) => { e.target.src = noImage }}
                             />
+                        </div>
 
-                            <h3
-                                className="text-2xl font-bold mb-2">
+                        {/* Product Content */}
+                        <div className="p-6">
 
+                            <motion.h3
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                                className="text-2xl font-bold mb-2"
+                            >
                                 {product.name}
+                            </motion.h3>
 
-                            </h3>
-
-                            <p className="mb-3">
-
+                            <p className="text-gray-600 mb-4 line-clamp-3">
                                 {product.description}
-
                             </p>
 
-                            <p
-                                className="text-green-600 font-bold">
+                            <div className="flex justify-between items-center mb-4">
 
-                                ₹ {product.price}
+                                <motion.p
+                                    initial={{ opacity: 0, x: -20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.3 }}
+                                    className="text-green-600 text-xl font-bold"
+                                >
+                                    ₹ {product.price}
+                                </motion.p>
 
-                            </p>
+                                <motion.p
+                                    initial={{ opacity: 0, x: 20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.3 }}
+                                    className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full"
+                                >
+                                    {product.flavor}
+                                </motion.p>
 
-                            <p
-                                className="text-sm text-gray-500 mt-2">
+                            </div>
 
-                                Flavor:
-                                {" "}
-                                {product.flavor}
-
-                            </p>
-
-                            <button
-                                onClick={() =>
-                                    addToCart(product)
-                                }
-                                className="mt-4 w-full bg-green-600 text-white px-5 py-3 rounded-xl hover:bg-green-700 transition font-bold">
-
+                            {/* Button */}
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => addToCart(product)}
+                                className="
+                                    w-full
+                                    bg-green-600 text-white
+                                    px-5 py-3 rounded-xl
+                                    hover:bg-green-700
+                                    transition font-bold
+                                "
+                            >
                                 Add To Cart
-
-                            </button>
+                            </motion.button>
 
                         </div>
-                    ))
-                }
+
+                    </motion.div>
+                ))}
 
             </div>
 

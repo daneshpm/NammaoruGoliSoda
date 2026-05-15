@@ -1,28 +1,45 @@
+import { motion } from "framer-motion"
+
 function Contact() {
 
     return (
 
         <section
             id="contact"
-            className="py-20 px-10 text-center">
+            className="py-20 px-10 text-center"
+        >
 
-            <h2 className="text-4xl font-bold mb-8">
-
+            <motion.h2
+                initial={{ opacity: 0, y: -30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                className="text-4xl font-bold mb-8"
+            >
                 Contact Us
+            </motion.h2>
 
-            </h2>
-
-            <p className="text-lg">
-
+            <motion.p
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05 }}
+                className="text-lg cursor-default"
+            >
                 📞 +91 9876543210
+            </motion.p>
 
-            </p>
-
-            <p className="text-lg mt-2">
-
+            <motion.p
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05 }}
+                className="text-lg mt-2 cursor-default"
+            >
                 📍 Bangalore, India
-
-            </p>
+            </motion.p>
 
         </section>
     )
