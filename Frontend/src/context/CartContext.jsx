@@ -10,6 +10,9 @@ export const CartProvider =
 
         const [cartItems, setCartItems] =
             useState([]);
+        const clearCart = () => {
+    setCartItems([])
+}
 
         const addToCart = (product) => {
             
@@ -115,7 +118,8 @@ const decreaseQuantity = (id) => {
     addToCart,
     removeFromCart,
     increaseQuantity,
-    decreaseQuantity
+    decreaseQuantity,
+    clearCart
 }}>
 
                 {children}

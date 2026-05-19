@@ -18,19 +18,21 @@ function Navbar() {
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY
-
             if (currentScrollY < lastScrollY || currentScrollY < 10) {
                 setVisible(true)
             } else {
                 setVisible(false)
             }
-
             setLastScrollY(currentScrollY)
         }
 
         window.addEventListener("scroll", handleScroll)
         return () => window.removeEventListener("scroll", handleScroll)
     }, [lastScrollY])
+
+    const scrollToCart = () => {
+        document.getElementById("cart")?.scrollIntoView({ behavior: "smooth" })
+    }
 
     const navLinks = ["home", "products", "about", "contact"]
 
@@ -61,7 +63,6 @@ function Navbar() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8 font-medium">
-
                 {navLinks.map((link, index) => (
                     <motion.a
                         key={link}
@@ -82,7 +83,33 @@ function Navbar() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
                     whileHover={{ scale: 1.2 }}
-                    onClick={() => navigate("/cart")}   // ✅ navigates to cart
+                    onClick={scrollToCart}
+                    className="relative cursor-pointer"
+                >
+                    <span className="text-2xl">🛒</span>
+                    <motion.span
+                        key={totalItems}
+                        initial={{ scale: 0.5 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                        className="
+                            absolute -top-2 -right-3
+                            bg-green-600 text-white
+                            text-xs px-2 py-1 rounded-full
+                        "
+                    >
+                        {totalItems}
+                    </motion.span>
+                </motion.div>
+            </div>
+
+            {/* ✅ Mobile — cart + hamburger always visible, outside menu */}
+            <div className="md:hidden flex items-center gap-4">
+
+                {/* Mobile Cart */}
+                <motion.div
+                    whileHover={{ scale: 1.2 }}
+                    onClick={scrollToCart}
                     className="relative cursor-pointer"
                 >
                     <span className="text-2xl">🛒</span>
@@ -101,22 +128,22 @@ function Navbar() {
                     </motion.span>
                 </motion.div>
 
+                {/* Hamburger */}
+                <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6 }}
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="flex flex-col justify-center items-center gap-1 w-10 h-10"
+                >
+                    <span className={`block h-1 w-7 bg-black rounded transition duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
+                    <span className={`block h-1 w-7 bg-black rounded transition duration-300 ${menuOpen ? "opacity-0" : ""}`} />
+                    <span className={`block h-1 w-7 bg-black rounded transition duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+                </motion.button>
+
             </div>
 
-            {/* Mobile Menu Button */}
-            <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6 }}
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="md:hidden flex flex-col justify-center items-center gap-1 w-10 h-10"
-            >
-                <span className={`block h-1 w-7 bg-black rounded transition duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
-                <span className={`block h-1 w-7 bg-black rounded transition duration-300 ${menuOpen ? "opacity-0" : ""}`} />
-                <span className={`block h-1 w-7 bg-black rounded transition duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
-            </motion.button>
-
-            {/* Mobile Menu */}
+            {/* Mobile Menu — only nav links, no cart here */}
             <AnimatePresence>
                 {menuOpen && (
                     <motion.div
@@ -145,26 +172,6 @@ function Navbar() {
                                 {link}
                             </motion.a>
                         ))}
-
-                        {/* Mobile Cart */}
-                        <motion.div
-                            whileHover={{ scale: 1.2 }}
-                            onClick={() => {
-                                navigate("/cart")       // ✅ navigates to cart
-                                setMenuOpen(false)
-                            }}
-                            className="relative cursor-pointer"
-                        >
-                            <span className="text-2xl">🛒</span>
-                            <span className="
-                                absolute -top-2 -right-3
-                                bg-green-600 text-white
-                                text-xs px-2 py-1 rounded-full
-                            ">
-                                {totalItems}
-                            </span>
-                        </motion.div>
-
                     </motion.div>
                 )}
             </AnimatePresence>

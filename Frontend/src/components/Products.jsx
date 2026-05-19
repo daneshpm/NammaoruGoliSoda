@@ -45,10 +45,7 @@ function Products() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                className="
-                    text-3xl sm:text-4xl md:text-5xl
-                    font-bold text-center mb-12
-                "
+                className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-12"
             >
                 Our Products
             </motion.h2>
@@ -68,7 +65,7 @@ function Products() {
             )}
 
             {/* Product Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8">
 
                 {products.map((product, index) => (
 
@@ -79,7 +76,7 @@ function Products() {
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                         viewport={{ once: true }}
                         whileHover={{ y: -8, boxShadow: "0 20px 40px rgba(0,0,0,0.12)" }}
-                        className="bg-white rounded-2xl overflow-hidden shadow-md"
+                        className="bg-white rounded-2xl overflow-hidden shadow-md flex flex-col"
                     >
 
                         {/* Product Image */}
@@ -89,34 +86,34 @@ function Products() {
                                 transition={{ duration: 0.4 }}
                                 src={`https://zonate-filomena-nonfeasible.ngrok-free.dev${product.imageUrl}`}
                                 alt={product.name}
-                                className="w-full h-56 sm:h-64 object-cover"
+                                className="w-full h-36 sm:h-48 md:h-56 object-cover"
                                 onError={(e) => { e.target.src = noImage }}
                             />
                         </div>
 
                         {/* Product Content */}
-                        <div className="p-6">
+                        <div className="p-3 sm:p-5 flex flex-col flex-1">
 
                             <motion.h3
                                 initial={{ opacity: 0 }}
                                 whileInView={{ opacity: 1 }}
                                 transition={{ delay: 0.2 }}
-                                className="text-2xl font-bold mb-2"
+                                className="text-sm sm:text-xl font-bold mb-1 line-clamp-1"
                             >
                                 {product.name}
                             </motion.h3>
 
-                            <p className="text-gray-600 mb-4 line-clamp-3">
+                            <p className="text-gray-600 mb-3 text-xs sm:text-sm line-clamp-2">
                                 {product.description}
                             </p>
 
-                            <div className="flex justify-between items-center mb-4">
+                            <div className="flex justify-between items-center mb-3">
 
                                 <motion.p
                                     initial={{ opacity: 0, x: -20 }}
                                     whileInView={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.3 }}
-                                    className="text-green-600 text-xl font-bold"
+                                    className="text-green-600 text-sm sm:text-lg font-bold"
                                 >
                                     ₹ {product.price}
                                 </motion.p>
@@ -125,7 +122,7 @@ function Products() {
                                     initial={{ opacity: 0, x: 20 }}
                                     whileInView={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.3 }}
-                                    className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full"
+                                    className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full line-clamp-1"
                                 >
                                     {product.flavor}
                                 </motion.p>
@@ -138,11 +135,12 @@ function Products() {
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => addToCart(product)}
                                 className="
-                                    w-full
+                                    w-full mt-auto
                                     bg-green-600 text-white
-                                    px-5 py-3 rounded-xl
+                                    px-3 py-2 rounded-xl
                                     hover:bg-green-700
                                     transition font-bold
+                                    text-xs sm:text-base
                                 "
                             >
                                 Add To Cart

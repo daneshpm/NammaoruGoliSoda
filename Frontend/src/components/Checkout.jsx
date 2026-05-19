@@ -6,7 +6,7 @@ import { CartContext } from "../context/CartContext"
 
 function Checkout() {
 
-    const { cartItems } = useContext(CartContext)
+    const { cartItems,clearCart } = useContext(CartContext)
 
     const [formData, setFormData] = useState({
         shopName: "",
@@ -23,26 +23,50 @@ function Checkout() {
     }
 
     const placeOrder = async () => {
-        try {
-            const orderData = {
-                shopName: formData.shopName,
-                ownerName: formData.ownerName,
-                phone: formData.phone,
-                location: formData.location,
-                items: cartItems.map(item => ({
-                    productId: item.id,
-                    quantity: item.quantity
-                }))
-            }
 
-            const response = await api.post("/orders", orderData)
-            toast.success("Order Placed Successfully")
-            window.location.href = response.data.whatsappUrl
-
-        } catch(error) {
-            console.error(error)
-        }
+    if (!formData.shopName.trim()) {
+        toast.error("Please enter Shop Name")
+        return
     }
+    if (!formData.ownerName.trim()) {
+        toast.error("Please enter Owner Name")
+        return
+    }
+    if (!formData.phone.trim()) {
+        toast.error("Please enter Phone Number")
+        return
+    }
+    if (!/^[0-9]{10}$/.test(formData.phone)) {
+        toast.error("Enter a valid 10 digit phone number")
+        return
+    }
+    if (!formData.location.trim()) {
+        toast.error("Please enter Location")
+        return
+    }
+
+    try {
+        const orderData = {
+            shopName: formData.shopName,
+            ownerName: formData.ownerName,
+            phone: formData.phone,
+            location: formData.location,
+            items: cartItems.map(item => ({
+                productId: item.id,
+                quantity: item.quantity
+            }))
+        }
+
+        const response = await api.post("/orders", orderData)
+        toast.success("Order Placed Successfully")
+        clearCart()
+        window.location.href = response.data.whatsappUrl
+
+    } catch(error) {
+        console.error(error)
+        toast.error("Something went wrong. Please try again.")
+    }
+}
 
     const fields = [
         { name: "shopName", placeholder: "Shop Name" },

@@ -8,7 +8,7 @@ import Contact from "./components/Contact"
 import Footer from "./components/Footer"
 import Cart from "./components/Cart"
 import Checkout from "./components/Checkout"
-
+import ProtectedRoute from "./components/ProtectedRoute"
 import AdminLogin from "./pages/AdminLogin"
 import AdminDashboard from "./pages/AdminDashboard"
 import AdminProducts from "./pages/AdminProducts"
@@ -22,6 +22,7 @@ function HomePage() {
       <Navbar />
       <Hero />
       <Products />
+      <Cart />
       <About />
       <Contact />
       <Footer />
@@ -30,17 +31,28 @@ function HomePage() {
 }
 
 function App() {
-
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/checkout" element={<Checkout />} />
+      {/* <Route path="/cart" element={<Cart />} />
+      <Route path="/checkout" element={<Checkout />} /> */}
       <Route path="/admin" element={<AdminLogin />} />
-      <Route path="/dashboard" element={<AdminDashboard />} />
-      <Route path="/admin/orders" element={<AdminOrders />} />
-      <Route path="/admin/products" element={<AdminProducts />} />
-      <Route path="/admin/analytics" element={<Analytics />} />
+
+      <Route path="/dashboard" element={
+        <ProtectedRoute><AdminDashboard /></ProtectedRoute>
+      } />
+
+      <Route path="/admin/orders" element={
+        <ProtectedRoute><AdminOrders /></ProtectedRoute>
+      } />
+
+      <Route path="/admin/products" element={
+        <ProtectedRoute><AdminProducts /></ProtectedRoute>
+      } />
+
+      <Route path="/admin/analytics" element={
+        <ProtectedRoute><Analytics /></ProtectedRoute>
+      } />
     </Routes>
   )
 }
