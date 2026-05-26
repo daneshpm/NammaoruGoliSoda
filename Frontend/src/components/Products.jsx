@@ -84,7 +84,7 @@ function Products() {
                             <motion.img
                                 whileHover={{ scale: 1.05 }}
                                 transition={{ duration: 0.4 }}
-                                src={`https://zonate-filomena-nonfeasible.ngrok-free.dev${product.imageUrl}`}
+                                src={ product.imageUrl?.startsWith("/uploads") ? `https://zonate-filomena-nonfeasible.ngrok-free.dev${product.imageUrl}` : product.imageUrl }
                                 alt={product.name}
                                 className="w-full h-36 sm:h-48 md:h-56 object-cover"
                                 onError={(e) => { e.target.src = noImage }}
